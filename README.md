@@ -4,7 +4,7 @@ Glider Labs Utility. A CLI utility with commands for Glider Labs projects.
 
 ## Getting glu
 
-  $ go get -u github.com/gliderlabs/glu
+    $ go get -u github.com/gliderlabs/glu
 
 ## Usage
 ```

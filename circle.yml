@@ -1,6 +1,6 @@
 dependencies:
   override:
-    - go get
+    - go get || true
     - go install
 
 test:

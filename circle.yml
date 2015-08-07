@@ -1,0 +1,7 @@
+dependencies:
+  override:
+    - go install
+
+test:
+  override:
+    - glu

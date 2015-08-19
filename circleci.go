@@ -9,7 +9,7 @@ import (
 )
 
 func init() {
-	GluCmd.AddCommand(circleciCmd)
+	Glu.AddCommand(circleciCmd)
 }
 
 var circleciCmd = &cobra.Command{

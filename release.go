@@ -12,7 +12,7 @@ import (
 )
 
 func init() {
-	GluCmd.AddCommand(releaseCmd)
+	Glu.AddCommand(releaseCmd)
 }
 
 var releaseCmd = &cobra.Command{

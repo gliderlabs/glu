@@ -2,7 +2,10 @@ dependencies:
   override:
     - go get || true
     - go build
+    - ./glu build glu linux,darwin
+    - docker build -t gliderlabs/glu .
 
 test:
   override:
-    - ./glu
+    - docker run --rm gliderlabs/glu Linux | tar -xC /tmp
+    - /tmp/glu

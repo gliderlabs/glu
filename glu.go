@@ -16,16 +16,16 @@ var (
 	q  = shell.Quote
 )
 
-var GluCmd = &cobra.Command{
+var Glu = &cobra.Command{
 	Use:   "glu",
 	Short: "glu is a collection of utility commands for Glider Labs projects",
 	Run: func(cmd *cobra.Command, args []string) {
-		cmd.Usage()
+		cmd.Help()
 	},
 }
 
 func main() {
-	GluCmd.Execute()
+	Glu.Execute()
 }
 
 func fatal(err error) {
@@ -63,4 +63,8 @@ func exists(path ...string) bool {
 
 func writeFile(path, data string) {
 	fatal(ioutil.WriteFile(path, []byte(strings.Trim(data, "\n")+"\n"), 0644))
+}
+
+func mkdirAll(path ...string) {
+	fatal(os.MkdirAll(filepath.Join(path...), 0777))
 }

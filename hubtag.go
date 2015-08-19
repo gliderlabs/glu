@@ -12,7 +12,7 @@ import (
 )
 
 func init() {
-	GluCmd.AddCommand(hubtagCmd)
+	Glu.AddCommand(hubtagCmd)
 }
 
 var hubtagCmd = &cobra.Command{

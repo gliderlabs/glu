@@ -42,7 +42,7 @@ var buildCmd = &cobra.Command{
 			ldFlag string
 		)
 		if info.Version != "" {
-			ldFlag = fmt.Sprintf("-ldflags \"-X main.Version=%s\"", info.Version)
+			ldFlag = fmt.Sprintf("-ldflags \"-X main.Version %s\"", info.Version)
 		}
 
 		if insideContainer() {

@@ -33,15 +33,17 @@ var buildCmd = &cobra.Command{
 		}
 
 		var (
-			repo   = repoPath()
+			info   = NewProjectInfo()
 			osList = strings.Split(args[0], ",")
 			pkgs   = optArg(args, 1, ".")
-			name   = optArg(args, 2, filepath.Base(repo))
+			name   = optArg(args, 2, info.Name)
+
+			ldFlag string
 		)
 
 		if insideContainer() {
 			os.Setenv("GOPATH", "/go")
-			path := fmt.Sprintf("/go/src/%s", repo)
+			path := fmt.Sprintf("/go/src/%s", info.Repo)
 			sh("mkdir -p", filepath.Dir(path))
 			sh("cp -r /project", path)
 			sh("cd", path) // for show
@@ -49,12 +51,16 @@ var buildCmd = &cobra.Command{
 			sh("go get")
 		}
 
+		if info.Version != "" {
+			ldFlag = fmt.Sprintf("-ldflags \"-X main.Version %s\"", info.Version)
+		}
+
 		os.Setenv("CGO_ENABLED", "0")
 		for i := range osList {
 			os.Setenv("GOOS", strings.ToLower(osList[i]))
 			path := shell.Path("build", strings.Title(osList[i]))
 			sh("mkdir -p", path)
-			sh("go build -a -installsuffix cgo -o", shell.Path(path, name), pkgs)
+			sh("go build -a -installsuffix cgo", ldFlag, "-o", shell.Path(path, name), pkgs)
 		}
 
 		if insideContainer() {

@@ -1,11 +1,13 @@
 package main
 
 import (
+	"bufio"
 	"fmt"
 	"io/ioutil"
 	"os"
 	"os/exec"
 	"path/filepath"
+	"regexp"
 	"strings"
 
 	"github.com/progrium/go-shell"
@@ -62,6 +64,14 @@ func exists(path ...string) bool {
 	return true
 }
 
+func readFile(path string) string {
+	data, err := ioutil.ReadFile(path)
+	if err != nil {
+		return ""
+	}
+	return strings.Trim(string(data), "\n ")
+}
+
 func writeFile(path, data string) {
 	fatal(ioutil.WriteFile(path, []byte(strings.Trim(data, "\n")+"\n"), 0644))
 }
@@ -76,7 +86,7 @@ func shellOutput(cmd string) string {
 	return strings.Trim(string(out), " \n")
 }
 
-func repoPath() string {
+func repoLocation() string {
 	if insideContainer() {
 		os.Chdir("/project")
 	}
@@ -86,4 +96,33 @@ func repoPath() string {
 	repo = strings.TrimPrefix(repo, "git@")
 	repo = strings.TrimSuffix(repo, ".git")
 	return repo
+}
+
+func normalizeVersion(v string) string {
+	return strings.TrimLeft(v, "v")
+}
+
+func findVersion() string {
+	if insideContainer() {
+		os.Chdir("/project")
+	}
+	if exists("VERSION") {
+		return normalizeVersion(readFile("VERSION"))
+	}
+	if exists("Makefile") {
+		f, err := os.Open("Makefile")
+		if err != nil {
+			return ""
+		}
+		defer f.Close()
+		scanner := bufio.NewScanner(f)
+		re := regexp.MustCompile("VERSION=(.+)")
+		for scanner.Scan() {
+			matches := re.FindAllStringSubmatch(scanner.Text(), 1)
+			if len(matches) > 0 {
+				return normalizeVersion(matches[0][1])
+			}
+		}
+	}
+	return ""
 }

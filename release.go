@@ -4,7 +4,6 @@ import (
 	"fmt"
 	"io/ioutil"
 	"os"
-	"path"
 
 	"github.com/progrium/go-shell"
 	"github.com/spf13/cobra"
@@ -15,19 +14,15 @@ func init() {
 }
 
 var releaseCmd = &cobra.Command{
-	Use:   "release <github-repo> <version> [release-name] [checksum-hash]",
+	Use:   "release [release-name] [checksum-hash]",
 	Short: "Creates a github release using gh-release",
 	Run: func(cmd *cobra.Command, args []string) {
-		if len(args) < 2 {
-			cmd.Usage()
-			os.Exit(1)
-		}
 		var (
-			githubRepo   = args[0]
-			projectName  = path.Base(githubRepo)
-			version      = args[1]
-			releaseName  = optArg(args, 2, version)
-			checksumHash = optArg(args, 3, "")
+			info         = NewProjectInfo()
+			githubRepo   = info.Owner + "/" + info.Name
+			version      = info.Version
+			releaseName  = optArg(args, 0, version)
+			checksumHash = optArg(args, 1, "")
 			arch         = shellOutput("uname -m")
 			branch       = shellOutput("git rev-parse --abbrev-ref HEAD")
 		)
@@ -43,7 +38,7 @@ var releaseCmd = &cobra.Command{
 			if binary := detectBinaryBuild(platform); binary != "" {
 				// tar -zcf release/$(NAME)_$(VERSION)_$(PLATFORM)_$(ARCH).tgz -C build/$(PLATFORM) $(BINARYNAME)
 				sh("tar -zcf",
-					fmt.Sprintf("release/%s_%s_%s_%s.tgz", projectName, version, platform, arch),
+					fmt.Sprintf("release/%s_%s_%s_%s.tgz", info.Name, version, platform, arch),
 					"-C build/"+platform, binary)
 			}
 		}

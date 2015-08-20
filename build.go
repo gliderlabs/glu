@@ -41,6 +41,9 @@ var buildCmd = &cobra.Command{
 
 			ldFlag string
 		)
+		if info.Version != "" {
+			ldFlag = fmt.Sprintf("-ldflags \"-X main.Version %s\"", info.Version)
+		}
 
 		if insideContainer() {
 			os.Setenv("GOPATH", "/go")
@@ -49,12 +52,9 @@ var buildCmd = &cobra.Command{
 			sh("cp -r /project", path)
 			sh("cd", path) // for show
 			os.Chdir(path)
-			sh("go get")
 		}
 
-		if info.Version != "" {
-			ldFlag = fmt.Sprintf("-ldflags \"-X main.Version %s\"", info.Version)
-		}
+		sh("go get", pkgs)
 
 		os.Setenv("CGO_ENABLED", "0")
 		for i := range osList {

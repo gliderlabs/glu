@@ -4,6 +4,7 @@ machine:
 
 dependencies:
   override:
+    - echo "build-$CIRCLE_BUILD_NUM" > VERSION
     - make build
 
 test:

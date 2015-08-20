@@ -17,6 +17,8 @@ import (
 var (
 	sh = shell.Run
 	q  = shell.Quote
+
+	Version string
 )
 
 var Glu = &cobra.Command{
@@ -27,7 +29,15 @@ var Glu = &cobra.Command{
 	},
 }
 
+var versionCmd = &cobra.Command{
+	Use: "version",
+	Run: func(cmd *cobra.Command, args []string) {
+		fmt.Println(Version)
+	},
+}
+
 func main() {
+	Glu.AddCommand(versionCmd)
 	Glu.Execute()
 }
 

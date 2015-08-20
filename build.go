@@ -93,7 +93,8 @@ func tryContainer(cmd *cobra.Command, args []string) bool {
 		if binary, err = exec.LookPath("sudo"); err != nil {
 			return false
 		}
-		newCmd = []string{"sudo", "lxc-attach", "-n", dockerID("glu"), "--", "/bin/glu"}
+		os.Setenv("GLU_CONTAINER", "true")
+		newCmd = []string{"sudo", "-E", "lxc-attach", "-n", dockerID("glu"), "--", "/bin/glu"}
 		newCmd = append(newCmd, args[1:]...)
 	} else {
 		if binary, err = exec.LookPath("docker"); err != nil {

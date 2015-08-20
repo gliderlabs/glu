@@ -105,7 +105,7 @@ func repoLocation() string {
 	repo = strings.TrimPrefix(repo, "https://")
 	repo = strings.TrimPrefix(repo, "git@")
 	repo = strings.TrimSuffix(repo, ".git")
-	return repo
+	return strings.Replace(repo, ":", "/", -1)
 }
 
 func normalizeVersion(v string) string {

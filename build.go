@@ -94,13 +94,15 @@ func tryContainer(cmd *cobra.Command, args []string) bool {
 			return false
 		}
 		newCmd = []string{"sudo", "lxc-attach", "-n", dockerID("glu"), "--", "/bin/glu"}
+		newCmd = append(newCmd, args[1:]...)
 	} else {
 		if binary, err = exec.LookPath("docker"); err != nil {
 			return false
 		}
 		newCmd = []string{"docker", "exec", "glu"}
+		newCmd = append(newCmd, args...)
 	}
-	syscall.Exec(binary, append(newCmd, args...), os.Environ())
+	syscall.Exec(binary, newCmd, os.Environ())
 	return true
 }
 

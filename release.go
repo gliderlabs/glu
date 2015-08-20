@@ -4,7 +4,6 @@ import (
 	"fmt"
 	"io/ioutil"
 	"os"
-	"os/exec"
 	"path"
 
 	"github.com/progrium/go-shell"
@@ -29,8 +28,8 @@ var releaseCmd = &cobra.Command{
 			version      = args[1]
 			releaseName  = optArg(args, 2, version)
 			checksumHash = optArg(args, 3, "")
-			arch, _      = exec.Command("uname", "-m").Output()
-			branch, _    = exec.Command("git", "rev-parse", "--abbrev-ref", "HEAD").Output()
+			arch         = shellOutput("uname -m")
+			branch       = shellOutput("git rev-parse --abbrev-ref HEAD")
 		)
 
 		defer shell.ErrExit()

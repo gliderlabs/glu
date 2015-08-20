@@ -54,7 +54,7 @@ var buildCmd = &cobra.Command{
 			os.Chdir(path)
 		}
 
-		sh("go get", pkgs)
+		sh("go get -d", pkgs)
 
 		os.Setenv("CGO_ENABLED", "0")
 		for i := range osList {

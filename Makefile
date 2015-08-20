@@ -1,7 +1,7 @@
 .PHONY: build
 
 build:
-	go get || true
+	go get -d
 	go build
 	./glu container down
 	./glu build linux,darwin

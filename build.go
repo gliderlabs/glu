@@ -8,6 +8,7 @@ import (
 	"strings"
 	"syscall"
 
+	"github.com/fsouza/go-dockerclient"
 	"github.com/progrium/go-shell"
 	"github.com/spf13/cobra"
 )
@@ -89,10 +90,31 @@ func tryContainer(cmd *cobra.Command, args []string) bool {
 	}
 	fmt.Fprintln(os.Stderr, "* Using glu container")
 	args = append(strings.Split(cmd.CommandPath(), " "), args...)
-	syscall.Exec(binary, append([]string{"docker", "exec", "glu"}, args...), os.Environ())
+	var newCmd []string
+	if os.Getenv("CIRCLECI") == "true" {
+		newCmd = []string{"sudo", "lxc-attach", "-n", dockerID("glu"), "--", "/bin/glu"}
+	} else {
+		newCmd = []string{"docker", "exec", "glu"}
+	}
+	syscall.Exec(binary, append(newCmd, args...), os.Environ())
 	return true
 }
 
 func insideContainer() bool {
 	return os.Getenv("GLU_CONTAINER") == "true"
+}
+
+func dockerID(container string) string {
+	client, err := docker.NewClientFromEnv()
+	fatal(err)
+	containers, err := client.ListContainers(docker.ListContainersOptions{})
+	fatal(err)
+	for _, cntr := range containers {
+		for _, name := range cntr.Names {
+			if name[1:] == container {
+				return cntr.ID
+			}
+		}
+	}
+	return ""
 }

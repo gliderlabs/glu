@@ -84,16 +84,20 @@ func tryContainer(cmd *cobra.Command, args []string) bool {
 	if !dockerExistsByName("glu") {
 		return false
 	}
-	binary, err := exec.LookPath("docker")
-	if err != nil {
-		return false
-	}
 	fmt.Fprintln(os.Stderr, "* Using glu container")
 	args = append(strings.Split(cmd.CommandPath(), " "), args...)
 	var newCmd []string
+	var binary string
+	var err error
 	if os.Getenv("CIRCLECI") == "true" {
+		if binary, err = exec.LookPath("sudo"); err != nil {
+			return false
+		}
 		newCmd = []string{"sudo", "lxc-attach", "-n", dockerID("glu"), "--", "/bin/glu"}
 	} else {
+		if binary, err = exec.LookPath("docker"); err != nil {
+			return false
+		}
 		newCmd = []string{"docker", "exec", "glu"}
 	}
 	syscall.Exec(binary, append(newCmd, args...), os.Environ())

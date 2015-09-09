@@ -1,13 +1,10 @@
 package main
 
 import (
-	"bytes"
-	"encoding/base64"
-	"encoding/json"
 	"fmt"
-	"net/http"
 	"os"
 
+	"github.com/progrium/go-shell"
 	"github.com/spf13/cobra"
 )
 
@@ -23,43 +20,23 @@ var hubtagCmd = &cobra.Command{
 			cmd.Usage()
 			os.Exit(1)
 		}
-		dockerhub_repo := args[0]
-		tag := make(map[string]string)
-		tag["name"] = args[1]
-		tag["source_type"] = "Tag"
-		tag["source_name"] = args[1]
+		dockerhubRepo := args[0]
+		tagName := args[1]
+		tagSource := args[1]
 		if len(args) >= 3 {
-			tag["source_name"] = args[2]
+			tagSource = args[2]
 		}
-		tag["dockerfile_location"] = "/"
+		dockerfileLocation := "/"
 		if len(args) >= 4 {
-			tag["dockerfile_location"] = args[3]
+			dockerfileLocation = args[3]
 		}
-		tagJson, err := json.Marshal(&tag)
-		fatal(err)
-		login, err := base64.StdEncoding.DecodeString(os.Getenv("DOCKERHUB_LOGIN"))
-		fatalMsg(err, "Bad login value for DOCKERHUB_LOGIN")
 
-		resp, err := http.Post("https://hub.docker.com/v2/users/login",
-			"application/json", bytes.NewBuffer(login))
-		fatal(err)
-		defer resp.Body.Close()
-		dec := json.NewDecoder(resp.Body)
-		var token map[string]string
-		fatal(dec.Decode(&token))
+		defer shell.ErrExit()
+		shell.Trace = true
+		shell.Tee = os.Stdout
+		sh("go get -u github.com/progrium/dockerhub-tag")
 
-		client := new(http.Client)
-		req, err := http.NewRequest("POST",
-			fmt.Sprintf("https://hub.docker.com/v2/repositories/%s/autobuild/tags/", dockerhub_repo),
-			bytes.NewBuffer(tagJson))
-		fatal(err)
-		req.Header.Add("Content-Type", "application/json")
-		req.Header.Add("Authorization", fmt.Sprintf("JWT %s", token["token"]))
-		resp, err = client.Do(req)
-		fatal(err)
-		if resp.StatusCode != 201 {
-			fmt.Println(resp)
-			os.Exit(1)
-		}
+		sh(fmt.Sprintf("dockerhub-tag set %s %s %s %s", dockerhubRepo, tagName, tagSource, dockerfileLocation))
+
 	},
 }

@@ -34,7 +34,7 @@ var releaseCmd = &cobra.Command{
 		sh("rm -rf release")
 		sh("mkdir release")
 
-		for _, platform := range []string{"Linux", "Darwin"} {
+		for _, platform := range []string{"Linux", "Darwin", "Windows"} {
 			if binary := detectBinaryBuild(platform); binary != "" {
 				// tar -zcf release/$(NAME)_$(VERSION)_$(PLATFORM)_$(ARCH).tgz -C build/$(PLATFORM) $(BINARYNAME)
 				sh("tar -zcf",

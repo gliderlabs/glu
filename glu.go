@@ -110,6 +110,9 @@ func normalizeVersion(v string) string {
 }
 
 func findVersion() string {
+	if len(os.Getenv("VERSION")) > 0 {
+		return os.Getenv("VERSION")
+	}
 	if exists("VERSION") {
 		return normalizeVersion(readFile("VERSION"))
 	}

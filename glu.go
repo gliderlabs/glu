@@ -97,9 +97,6 @@ func shellOutput(cmd string) string {
 }
 
 func repoLocation() string {
-	if insideContainer() {
-		os.Chdir("/project")
-	}
 	repo := shellOutput("git config --get remote.origin.url")
 	repo = strings.TrimPrefix(repo, "http://")
 	repo = strings.TrimPrefix(repo, "https://")
@@ -113,9 +110,6 @@ func normalizeVersion(v string) string {
 }
 
 func findVersion() string {
-	if insideContainer() {
-		os.Chdir("/project")
-	}
 	if exists("VERSION") {
 		return normalizeVersion(readFile("VERSION"))
 	}

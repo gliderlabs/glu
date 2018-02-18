@@ -5,7 +5,7 @@ import (
 	"io/ioutil"
 	"os"
 
-	"github.com/progrium/go-shell"
+	"github.com/keyki/go-shell"
 	"github.com/spf13/cobra"
 )
 
@@ -30,11 +30,11 @@ var releaseCmd = &cobra.Command{
 		defer shell.ErrExit()
 		shell.Trace = true
 		shell.Tee = os.Stdout
-		sh("go get -u github.com/progrium/gh-release/...")
+		sh("go get -u github.com/keyki/gh-release/...")
 		sh("rm -rf release")
 		sh("mkdir release")
 
-		for _, platform := range []string{"Linux", "Darwin"} {
+		for _, platform := range []string{"Linux", "Darwin", "Windows"} {
 			if binary := detectBinaryBuild(platform); binary != "" {
 				// tar -zcf release/$(NAME)_$(VERSION)_$(PLATFORM)_$(ARCH).tgz -C build/$(PLATFORM) $(BINARYNAME)
 				sh("tar -zcf",

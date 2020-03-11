@@ -1,6 +1,6 @@
 FROM gliderlabs/alpine:3.7
 ENV GLU_CONTAINER true
-ENV GO_VERSION=1.6
+ENV GO_VERSION=1.13.8
 ENV GLIBC_VERSION=2.31-r0
 ENTRYPOINT ["/bin/cat"]
 CMD ["Linux"]

@@ -11,8 +11,8 @@ jobs:
             make build
       - run:
           command: |
-            docker run --rm gliderlabs/glu Linux | tar -xC /home/ubuntu/bin
-            /home/ubuntu/bin/glu
+            docker run --rm gliderlabs/glu Linux | tar -xC /home/circleci/bin
+            /home/circleci/bin/glu
       - run:
           command: |
             if [[ "$CIRCLE_BRANCH" == "master" ]]; then

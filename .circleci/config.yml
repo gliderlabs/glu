@@ -1,0 +1,21 @@
+version: 2
+jobs:
+  build:
+    machine:
+      image: ubuntu-1604:201903-01
+    steps:
+      - checkout
+      - run:
+          command: |
+            echo "build-$CIRCLE_BUILD_NUM" > VERSION
+            make build
+      - run:
+          command: |
+            docker run --rm gliderlabs/glu Linux | tar -xC /home/ubuntu/bin
+            /home/ubuntu/bin/glu
+      - run:
+          command: |
+            if [[ "$CIRCLE_BRANCH" == "master" ]]; then
+              docker login -e $DOCKER_EMAIL -u $DOCKER_USER -p $DOCKER_PASS
+              docker push gliderlabs/glu
+            fi

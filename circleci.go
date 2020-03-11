@@ -26,7 +26,7 @@ var circleciCmd = &cobra.Command{
 			sh("echo", q(build), "> VERSION")
 		}
 		info := NewProjectInfo()
-		path := shell.Path("/home/ubuntu/.go_workspace/src", info.Repo)
+		path := shell.Path("/home/circleci/.go_workspace/src", info.Repo)
 		sh("rm -rf", path)
 		sh("mkdir -p", filepath.Dir(path))
 		sh("cd .. && mv", info.Name, path, "&&", "ln -s", path, info.Name)

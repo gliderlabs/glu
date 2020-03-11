@@ -2,9 +2,7 @@
 
 build:
 	go get -d
-	ls -lah
-	go build
-	ls -lah
+	go build -o glu
 	./glu container down
 	./glu build linux,darwin
 	rm ./glu

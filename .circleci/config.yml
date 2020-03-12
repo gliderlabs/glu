@@ -7,15 +7,19 @@ jobs:
       - checkout
       - run:
           command: |
+            make deps
+      - run:
+          command: |
             echo "build-$CIRCLE_BUILD_NUM" > VERSION
             make build
+      - store_artifacts:
+          path: /home/circleci/sigil/build
       - run:
           command: |
-            docker run --rm gliderlabs/glu Linux | tar -xC /home/circleci/bin
-            /home/circleci/bin/glu
+            make test
       - run:
           command: |
-            if [[ "$CIRCLE_BRANCH" == "master" ]]; then
+            if [[ "$CIRCLE_BRANCH" == "release" ]]; then
               docker login -u $DOCKER_USER -p $DOCKER_PASS
               docker push gliderlabs/glu
             fi

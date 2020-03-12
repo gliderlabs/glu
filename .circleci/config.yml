@@ -6,18 +6,22 @@ jobs:
     steps:
       - checkout
       - run:
+          name: install dependencies
           command: |
             make deps
       - run:
+          name: build
           command: |
             echo "build-$CIRCLE_BUILD_NUM" > VERSION
             make build
       - store_artifacts:
           path: /home/circleci/sigil/build
       - run:
+        name: test
           command: |
             make test
       - run:
+          name: release
           command: |
             if [[ "$CIRCLE_BRANCH" == "release" ]]; then
               make release

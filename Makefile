@@ -21,10 +21,10 @@ deps:
 	go get -d
 
 release:
-  docker login -u $(DOCKER_USER) -p $(DOCKER_PASS)
-  docker tag gliderlabs/glu:$(VERSION) gliderlabs/glu:latest
-  docker push gliderlabs/glu:latest
-  docker push gliderlabs/glu:$(VERSION)
+	docker login -u $(DOCKER_USER) -p $(DOCKER_PASS)
+	docker tag gliderlabs/glu:$(VERSION) gliderlabs/glu:latest
+	docker push gliderlabs/glu:latest
+	docker push gliderlabs/glu:$(VERSION)
 
 clean:
 	rm -rf build release

@@ -20,6 +20,5 @@ jobs:
       - run:
           command: |
             if [[ "$CIRCLE_BRANCH" == "release" ]]; then
-              docker login -u $DOCKER_USER -p $DOCKER_PASS
-              docker push gliderlabs/glu
+              make release
             fi

@@ -8,10 +8,10 @@ build:
 	./glu container down
 	./glu build linux,darwin
 	rm ./glu
-	docker build -t gliderlabs/glu .
+	docker build -t gliderlabs/glu:$(VERSION) .
 
 test:
-	docker run --rm gliderlabs/glu $(shell uname -s) | tar -xC /tmp
+	docker run --rm gliderlabs/glu:$(VERSION) $(shell uname -s) | tar -xC /tmp
 	/tmp/glu
 
 install: build
@@ -22,7 +22,9 @@ deps:
 
 release:
   docker login -u $(DOCKER_USER) -p $(DOCKER_PASS)
-  docker push gliderlabs/glu
+  docker tag gliderlabs/glu:$(VERSION) gliderlabs/glu:latest
+  docker push gliderlabs/glu:latest
+  docker push gliderlabs/glu:$(VERSION)
 
 clean:
 	rm -rf build release

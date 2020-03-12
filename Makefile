@@ -1,4 +1,4 @@
-glu
+NAME=glu
 ARCH=$(shell uname -m)
 ORG=gliderlabs
 VERSION=0.1.0

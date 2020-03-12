@@ -15,7 +15,7 @@ jobs:
             echo "build-$CIRCLE_BUILD_NUM" > VERSION
             make build
       - store_artifacts:
-          path: /home/circleci/sigil/build
+          path: /home/circleci/project/build
       - run:
           name: test
           command: |

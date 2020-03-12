@@ -17,7 +17,7 @@ jobs:
       - store_artifacts:
           path: /home/circleci/sigil/build
       - run:
-        name: test
+          name: test
           command: |
             make test
       - run:
